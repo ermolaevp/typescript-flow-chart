@@ -25,13 +25,32 @@ function point(x: number, y: number) {
 // })
 
 let arrow: paper.Path, currect: paper.Item, arrow2: paper.Path
+let statusesGroup: paper.Group, transitionsGroup: paper.Group
 
-const statusesGroup = new paper.Group({
-  children: statuses.map(createStatusRect),
+function onMouseDrag(this: paper.Group, e) {
+  this.position = e.point
+  const trstns = transitions.filter(t => {
+    return [t.sourceId, t.targetId].includes(this.name)
+  })
+  // console.log(trstns.map(t => t.id))
+  trstns.forEach(t => {
+    const tg = transitionsGroup.getItem({ name: t.name })
+    console.log(tg)
+    // recalculate transition points
+  })
+
+}
+
+statusesGroup = new paper.Group({
+  children: statuses.map(s => {
+    const statusRect = createStatusRect(s)
+    statusRect.onMouseDrag = onMouseDrag
+    return statusRect
+  }),
   // position: paper.view.center
 })
 
-const transitionsGroup = new paper.Group({
+transitionsGroup = new paper.Group({
   children: transitions.map(transition => {
     const { id, sourceId, targetId, sourceAngle, targetAngle } = transition
     const source = statusesGroup.children[sourceId]
@@ -64,10 +83,10 @@ tool.onMouseDown = (e: paper.MouseEvent) => {
 
 tool.onMouseDrag = (e: paper.ToolEvent) => {
   if (currect) {
-    currect.position = e.point
+    // currect.position = e.point
     // FIXME: what about multiple connections?
     const conn = transitionsGroup.getItem(i => {
-      return i.name.includes(currect.name)
+      return [i.data.sourceId, i.data.targetId].includes(currect.name)
     })
     if (conn) {
       const { id, sourceId, targetId, sourceAngle, targetAngle } = conn.data

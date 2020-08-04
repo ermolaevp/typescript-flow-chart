@@ -3,13 +3,7 @@ export const data = {
   name: 'MyProcess',
   layout: {
     statuses: [
-      // { id: 'S<33>', x: 516, y: 158.4 },
       { id: 'S<46>', x: 454.078125, y: 365.65016357421877 },
-      // { id: 'S<22>', x: 564.796875, y: 54.400000000000006 },
-      // { id: 'S<47>', x: 298.71875, y: 13.647704505920416 },
-      // { id: 'S<11>', x: 639.109375, y: -55.599999999999994 },
-      // { id: 'I<1>', x: 501, y: -117.6 },
-      // { id: 'S<45>', x: 255.125, y: 135.4 },
       { id: 'S<44>', x: 179.21875, y: 257.65016357421877 },
     ],
     transitions: [
@@ -20,48 +14,6 @@ export const data = {
         sourceId: 'S<44>',
         targetId: 'S<46>',
       },
-      // {
-      //   id: 'A<51:S<45>:S<45>>',
-      //   sourceAngle: null,
-      //   targetAngle: null,
-      //   sourceId: 'S<45>',
-      //   targetId: 'S<45>',
-      // },
-      // {
-      //   id: 'A<11:S<11>:S<11>>',
-      //   sourceAngle: null,
-      //   targetAngle: null,
-      //   sourceId: 'S<11>',
-      //   targetId: 'S<11>',
-      // },
-      // {
-      //   id: 'A<31:S<33>:S<33>>',
-      //   sourceAngle: null,
-      //   targetAngle: null,
-      //   sourceId: 'S<33>',
-      //   targetId: 'S<33>',
-      // },
-      // {
-      //   id: 'IA<1:I<1>:S<11>>',
-      //   sourceAngle: 90,
-      //   targetAngle: -90,
-      //   sourceId: 'I<1>',
-      //   targetId: 'S<11>',
-      // },
-      // {
-      //   id: 'A<41:S<44>:S<44>>',
-      //   sourceAngle: null,
-      //   targetAngle: null,
-      //   sourceId: 'S<44>',
-      //   targetId: 'S<44>',
-      // },
-      // {
-      //   id: 'A<21:S<22>:S<22>>',
-      //   sourceAngle: null,
-      //   targetAngle: null,
-      //   sourceId: 'S<22>',
-      //   targetId: 'S<22>',
-      // },
     ],
   },
 }
