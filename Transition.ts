@@ -1,4 +1,4 @@
-import { drawConnection } from './connection'
+import { drawConnection, createTargetArrow } from './connection'
 import paper from 'paper'
 
 interface TransitionProps {
@@ -14,6 +14,7 @@ export class Transition extends paper.Group {
   private target
   private sourceAngle
   private targetAngle
+  private targetArrow
   public constructor({ id, source, target, sourceAngle, targetAngle }: TransitionProps) {
     super()
     this.name = 'transition_' + id
@@ -27,12 +28,14 @@ export class Transition extends paper.Group {
       segments: drawConnection(sourcePoint, targetPoint),
       strokeColor: 'black'
     })
-    this.children = [path]
+    this.targetArrow = createTargetArrow()
+    this.children = [path, this.targetArrow.place(targetPoint)]
   }
   public redraw() {
     const sourcePoint = this.getSourcePoint()
     const targetPoint = this.getTargetPoint()
     this.firstChild.segments = drawConnection(sourcePoint, targetPoint)
+    this.lastChild.position = targetPoint
   }
   public hasConnectionWith(status: paper.Item) {
     return [this.source, this.target].includes(status)

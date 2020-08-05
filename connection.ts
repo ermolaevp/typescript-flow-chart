@@ -28,15 +28,19 @@ export function drawConnection(from: paper.Point, to: paper.Point) {
         to
       ]
   }
-  const vector = new paper.Point(0, 10)
-  // const arrow = new paper.Path({
-  //     segments: [
-  //       to,
-  //       to.subtract(vector.rotate(-30, undefined)),
-  //       to.subtract(vector.rotate(30, undefined))
-  //     ],
-  //     fillColor: 'gray',
-  //     closed: true,
-  //   })
+  
   return segments
+}
+
+export function createTargetArrow() {
+  const vector = new paper.Point(0, 10)
+  return new paper.SymbolDefinition(new paper.Path({
+      segments: [
+        vector,
+        vector.subtract(vector.rotate(-30, undefined)),
+        vector.subtract(vector.rotate(30, undefined))
+      ],
+      fillColor: 'gray',
+      closed: true,
+    }))
 }

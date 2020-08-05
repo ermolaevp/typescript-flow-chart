@@ -20,11 +20,21 @@ function* circleGenerator(start: paper.Point, v: paper.Point, limit: number){
 
 export class StatusRectangle extends paper.Group {
   private circles
-  public constructor({ id, x, y, name }: Props) {
+  private initalProps
+  public prefix = 'status_'
+
+  public constructor(props: Props) {
     super()
-    this.name = 'status_' + id
+    const { id, x, y, name, ...rest } = props
+    this.initalProps = props
+    this.name = this.prefix + id
     this.position = new paper.Point(x || paper.view.center.x, y || paper.view.center.y)
-    const size = new paper.Size({ width: 110, height: 28 })
+    const statusText = new paper.PointText({
+      content: (name || id).toUpperCase(),
+      fillColor: 'white',
+      position: this.position,
+    })
+    const size = new paper.Size({ width: statusText.bounds.width > 110 ? statusText.bounds.width + 25 : 110, height: 28 })
     const statusRect = new paper.Path.Rectangle({
       size,
       radius: 3,
@@ -50,26 +60,35 @@ export class StatusRectangle extends paper.Group {
     //   const angle = Math.ceil(c.position.subtract(this.position).angle)
     //   this.data.set(angle, c.position)
     // })
-    const statusText = new paper.PointText({
-      content: (name || id).toUpperCase(),
-      fillColor: 'white',
-      position: this.position,
-    })
+
+    // if (statusText.bounds.width > statusRect.bounds.width) {
+    //   console.log('eee')
+    //   statusRect.fitBounds(new paper.Rectangle())
+    // }
     this.onMouseEnter = function() {
-    this.circles.visible = true
-  }
-  this.onMouseLeave = function () {
+      this.circles.visible = true
+    }
+    this.onMouseLeave = function () {
       this.circles.visible = false
-  }
-  this.children = [statusRect, statusText, this.circles]
+    }
+    this.onMouseUp = function() {
+      this.selected = false
+    }
+    this.onMouseDown = function() {
+      this.selected = true
+    }
+    this.children = [statusRect, statusText, this.circles]
   }
   public getPointByAngle(angle: number) {
-    let a
-    this.circles.children.forEach(c => { // TODO: use .find
-      if (angle === Math.ceil(c.position.subtract(this.position).angle)) {
-        a = c.position
-      }
-    })
-    return a
+    const circle = this.circles.children.find(circle => angle === Math.ceil(circle.position.subtract(this.position).angle))
+    if (!circle) throw new Error(`No connection point found for angle ${angle}`)
+    return circle.position
+  }
+  public toJSON() {
+    return {
+      ...this.initalProps,
+      x: this.position.x,
+      y: this.position.y,
+    }
   }
 }
