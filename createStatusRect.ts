@@ -2,10 +2,11 @@ import paper from 'paper'
 import { connectionPoint } from './connectionPoint'
 
 interface Props {
-  id: string,
-  x: number,
-  y: number,
-  title?: string
+  id: string
+  x: number
+  y: number
+  name: string
+  type: number
 }
 
 function* circleGenerator(start: paper.Point, v: paper.Point, limit: number){
@@ -17,24 +18,24 @@ function* circleGenerator(start: paper.Point, v: paper.Point, limit: number){
   }
 }
 
-export function createStatusRect({
-  id,
-  x, y,
-  title
-}: Props) {
+export class StatusRectangle extends paper.Group {
+  private circles
+  public constructor({ id, x, y, name }: Props) {
+    super()
+    this.name = 'status_' + id
+    this.position = new paper.Point(x || paper.view.center.x, y || paper.view.center.y)
     const size = new paper.Size({ width: 110, height: 28 })
-    const position = new paper.Point(x, y)
     const statusRect = new paper.Path.Rectangle({
       size,
       radius: 3,
-      position,
+      position: this.position,
       fillColor: '#00875a',
       blendMode: 'overlay',
     })
     const { topLeft, topRight, bottomLeft, bottomRight, leftCenter, rightCenter } = statusRect.bounds
     const topVector = topRight.subtract(topLeft).normalize(size.width / 4)
     const bottomVector = bottomRight.subtract(bottomLeft).normalize(size.width / 4)
-    const circles = new paper.Group({
+    this.circles = new paper.Group({
       children: [
         ...Array.from(circleGenerator(topLeft, topVector, 3)),
         connectionPoint(rightCenter),
@@ -44,28 +45,31 @@ export function createStatusRect({
       name: 'circles',
       visible: false
     })
-    const data = new Map<number, paper.Point>()
-    circles.children.forEach(c => {
-      const angle = Math.ceil(c.position.subtract(position).angle)
-      data.set(angle, c.position)
-    })
-    // circles.visible = false
-    // circles.push()
-    // circles.push(, )
-     // [c1, c2, c3]
-    // console.log(circles)
-    function onMouseEnter(this: paper.Path.Rectangle) {
-      // this.fillColor = new paper.Color(0, 0, 1)
-      circles.visible = true
-    }
-    function onMouseLeave(this: paper.Path.Rectangle) {
-      // this.fillColor = new paper.Color(0, 1, 0)
-      circles.visible = false
-    }
+    // this.data = new Map<number, paper.Point>()
+    // this.circles.children.forEach(c => {
+    //   const angle = Math.ceil(c.position.subtract(this.position).angle)
+    //   this.data.set(angle, c.position)
+    // })
     const statusText = new paper.PointText({
-      content: (title || id).toUpperCase(),
+      content: (name || id).toUpperCase(),
       fillColor: 'white',
-      position,
+      position: this.position,
     })
-    return new paper.Group({ children: [statusRect, statusText, circles], name: id, onMouseEnter, onMouseLeave, data })
+    this.onMouseEnter = function() {
+    this.circles.visible = true
+  }
+  this.onMouseLeave = function () {
+      this.circles.visible = false
+  }
+  this.children = [statusRect, statusText, this.circles]
+  }
+  public getPointByAngle(angle: number) {
+    let a
+    this.circles.children.forEach(c => { // TODO: use .find
+      if (angle === Math.ceil(c.position.subtract(this.position).angle)) {
+        a = c.position
+      }
+    })
+    return a
+  }
 }
