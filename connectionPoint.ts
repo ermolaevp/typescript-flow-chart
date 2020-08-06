@@ -4,7 +4,7 @@ export function connectionPoint(center: paper.Point) {
   let p: paper.Path
   return new paper.Path.Circle({
     center,
-    radius: 3,
+    radius: 5,
     strokeWidth: 2,
     strokeColor: 'lightgrey',
     onMouseDrag: function(this: any, e: any) {

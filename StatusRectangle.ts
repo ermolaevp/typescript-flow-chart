@@ -21,20 +21,19 @@ function* circleGenerator(start: paper.Point, v: paper.Point, limit: number){
 export class StatusRectangle extends paper.Group {
   private circles
   private initalProps
-  public prefix = 'status_'
-
   public constructor(props: Props) {
     super()
     const { id, x, y, name, ...rest } = props
     this.initalProps = props
-    this.name = this.prefix + id
+    this.name = StatusRectangle.getName(id)
     this.position = new paper.Point(x || paper.view.center.x, y || paper.view.center.y)
     const statusText = new paper.PointText({
       content: (name || id).toUpperCase(),
       fillColor: 'white',
       position: this.position,
     })
-    const size = new paper.Size({ width: statusText.bounds.width > 110 ? statusText.bounds.width + 25 : 110, height: 28 })
+    const width = statusText.bounds.width > 110 ? statusText.bounds.width + 25 : 110
+    const size = new paper.Size({ width, height: 28 })
     const statusRect = new paper.Path.Rectangle({
       size,
       radius: 3,
@@ -78,6 +77,9 @@ export class StatusRectangle extends paper.Group {
       this.selected = true
     }
     this.children = [statusRect, statusText, this.circles]
+  }
+  static getName(id: string) {
+    return 'status_' + id
   }
   public getPointByAngle(angle: number) {
     const circle = this.circles.children.find(circle => angle === Math.ceil(circle.position.subtract(this.position).angle))

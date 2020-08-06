@@ -48,10 +48,6 @@ function onMouseDrag(this: paper.Group, e: paper.MouseEvent) {
   })
 }
 
-// function activateTool() {
-//   tool.activate()
-// }
-
 statusesGroup = new paper.Group({
   children: statuses.map(s => {
     const statusRect = new StatusRectangle(s)
@@ -64,11 +60,10 @@ statusesGroup = new paper.Group({
 transitionsGroup = new paper.Group({
   children: transitions.map(transition => {
     const { id, sourceId, targetId, sourceAngle, targetAngle } = transition
-    const source = statusesGroup.children['status_' + sourceId]
+    const source = statusesGroup.children[StatusRectangle.getName(sourceId)]
     if (!source) throw new Error(`No source with id ${sourceId} found`)
-    const target = statusesGroup.children['status_' + targetId]
+    const target = statusesGroup.children[StatusRectangle.getName(targetId)]
     if (!target) throw new Error(`No target with id ${targetId} found`)
-
     return new Transition({ id, source, target, sourceAngle, targetAngle })
   })
 })

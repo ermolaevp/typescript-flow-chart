@@ -17,7 +17,7 @@ export class Transition extends paper.Group {
   private targetArrow
   public constructor({ id, source, target, sourceAngle, targetAngle }: TransitionProps) {
     super()
-    this.name = 'transition_' + id
+    this.name = Transition.getName(id)
     this.sourceAngle = sourceAngle || 90
     this.targetAngle = targetAngle || -90
     this.source = source
@@ -36,6 +36,9 @@ export class Transition extends paper.Group {
     const targetPoint = this.getTargetPoint()
     this.firstChild.segments = drawConnection(sourcePoint, targetPoint)
     this.lastChild.position = targetPoint
+  }
+  static getName(id: string) {
+    return 'transition_' + id
   }
   public hasConnectionWith(status: paper.Item) {
     return [this.source, this.target].includes(status)
