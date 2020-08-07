@@ -1,5 +1,5 @@
 import paper from 'paper'
-import { connectionPoint } from './connectionPoint'
+import { ConnectionPointGroup } from './ConnectionPoint'
 
 interface Props {
   id: string
@@ -9,17 +9,8 @@ interface Props {
   type: number
 }
 
-function* circleGenerator(start: paper.Point, v: paper.Point, limit: number){
-  let i = 0
-  let position = start
-  while(i++ < limit) {
-    position = position.add(v)
-    yield connectionPoint(position)
-  }
-}
-
 export class StatusRectangle extends paper.Group {
-  private circles
+  // private circles
   private initalProps
   public constructor(props: Props) {
     super()
@@ -41,50 +32,23 @@ export class StatusRectangle extends paper.Group {
       fillColor: '#00875a',
       blendMode: 'overlay',
     })
-    const { topLeft, topRight, bottomLeft, bottomRight, leftCenter, rightCenter } = statusRect.bounds
-    const topVector = topRight.subtract(topLeft).normalize(size.width / 4)
-    const bottomVector = bottomRight.subtract(bottomLeft).normalize(size.width / 4)
-    this.circles = new paper.Group({
-      children: [
-        ...Array.from(circleGenerator(topLeft, topVector, 3)),
-        connectionPoint(rightCenter),
-        ...Array.from(circleGenerator(bottomLeft, bottomVector, 3)),
-        connectionPoint(leftCenter)
-      ],
-      name: 'circles',
-      visible: false
-    })
-    // this.data = new Map<number, paper.Point>()
-    // this.circles.children.forEach(c => {
-    //   const angle = Math.ceil(c.position.subtract(this.position).angle)
-    //   this.data.set(angle, c.position)
-    // })
-
-    // if (statusText.bounds.width > statusRect.bounds.width) {
-    //   console.log('eee')
-    //   statusRect.fitBounds(new paper.Rectangle())
-    // }
+    // this.circles = new ConnectionPointGroup(statusRect)
     this.onMouseEnter = function() {
-      this.circles.visible = true
+      this.lastChild.visible = true
     }
     this.onMouseLeave = function () {
-      this.circles.visible = false
+      this.lastChild.visible = false
     }
     this.onMouseUp = function() {
-      this.selected = false
+      this.firstChild.selected = false
     }
     this.onMouseDown = function() {
-      this.selected = true
+      this.firstChild.selected = true
     }
-    this.children = [statusRect, statusText, this.circles]
+    this.children = [statusRect, statusText]
   }
   static getName(id: string) {
     return 'status_' + id
-  }
-  public getPointByAngle(angle: number) {
-    const circle = this.circles.children.find(circle => angle === Math.ceil(circle.position.subtract(this.position).angle))
-    if (!circle) throw new Error(`No connection point found for angle ${angle}`)
-    return circle.position
   }
   public toJSON() {
     return {

@@ -4,6 +4,7 @@ import { data } from './data'
 import { drawConnection } from './connection'
 import { StatusRectangle } from './StatusRectangle'
 import { Transition } from './Transition'
+import { ConnectionPointGroup, ConnectionPoint } from './ConnectionPoint'
 
 const { statuses, transitions } = data.layout
 
@@ -36,8 +37,9 @@ function point(x: number, y: number) {
 
 let arrow: paper.Path, currect: paper.Item, arrow2: paper.Path
 let statusesGroup: paper.Group, transitionsGroup: paper.Group
+let connectionPoints = new paper.Group
 
-function onMouseDrag(this: paper.Group, e: paper.MouseEvent) {
+function onMouseDrag(this: StatusRectangle, e: paper.MouseEvent) {
   this.position = this.position.add(e.delta)
   // e.stopPropagation()
   // e.preventDefault()
@@ -48,10 +50,44 @@ function onMouseDrag(this: paper.Group, e: paper.MouseEvent) {
   })
 }
 
+function handleTransitionChange(this: StatusRectangle) {
+  transitionsGroup.children.forEach(transition => {
+    if (transition.hasConnectionWith(this)) {
+      // this.lastChild.children.forEach(circle => {
+      //   const angle = circle.position.subtract(this.position).angle
+      //   console.log(angle)
+      // })
+      console.log(this.lastChild.data, transition.sourceAngle)
+    }
+  })
+}
+
+function handleConnectionPointMouseUp(this: ConnectionPoint) {
+  
+  console.log(this)
+}
+
+function handleConnectionPointMouseEnter(this: ConnectionPoint) {
+  this.fillColor.set('red')
+}
+
+function handleConnectionPointMouseLeave(this: ConnectionPoint) {
+  this.fillColor.set('transparent')
+}
+
 statusesGroup = new paper.Group({
   children: statuses.map(s => {
     const statusRect = new StatusRectangle(s)
+    const connectionGroup = new ConnectionPointGroup(statusRect)
+    connectionGroup.children.forEach(connectionPoint => {
+      connectionPoint.onMouseUp = handleConnectionPointMouseUp
+      connectionPoint.onMouseEnter = handleConnectionPointMouseEnter
+      connectionPoint.onMouseLeave = handleConnectionPointMouseLeave
+    })
+    connectionPoints.addChild(connectionGroup)
+    statusRect.addChild(connectionGroup)
     statusRect.onMouseDrag = onMouseDrag
+    // statusRect.lastChild.children.forEach()
     return statusRect
   }),
   // position: paper.view.center
