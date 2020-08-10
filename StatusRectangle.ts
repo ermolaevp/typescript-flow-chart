@@ -1,6 +1,11 @@
 import paper from 'paper'
 import { ConnectionPointGroup } from './ConnectionPoint'
 
+const colors = new Map()
+colors.set(0, '#01579b')
+colors.set(1, '#2e7d32')
+colors.set(2, '#37474f')
+
 interface Props {
   id: string
   x: number
@@ -28,7 +33,7 @@ export class StatusRectangle extends paper.Group {
       size,
       radius: 3,
       position: this.position,
-      fillColor: '#00875a',
+      fillColor: colors.get(rest.type),
       blendMode: 'overlay',
     })
     this.onMouseEnter = function() {

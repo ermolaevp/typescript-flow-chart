@@ -14,8 +14,8 @@ export class ConnectionPoint extends paper.Path.Circle {
   constructor(center: paper.Point) {
     super({
       center,
-      radius: 5,
-      strokeWidth: 2,
+      radius: 4,
+      strokeWidth: 1,
       strokeColor: 'lightgrey',
       fillColor: 'transparent',
     })
