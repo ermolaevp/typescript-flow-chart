@@ -1,9 +1,5 @@
 import paper from 'paper'
 
-function point(x: number, y: number) {
-  return new paper.Point(x, y)
-}
-
 export function drawConnection(from: paper.Point, to: paper.Point) {
   let segments: paper.Point[]
   const d = 20
@@ -30,29 +26,4 @@ export function drawConnection(from: paper.Point, to: paper.Point) {
   }
   
   return segments
-}
-
-class TargetArrow extends paper.SymbolDefinition {
-  private vector: paper.Point
-  constructor() {
-    const vector = new paper.Point(0, 10)
-    const path = new paper.Path({
-      segments: [
-        vector,
-        vector.subtract(vector.rotate(-30, undefined)),
-        vector.subtract(vector.rotate(30, undefined))
-      ],
-      fillColor: 'gray',
-      closed: true,
-    })
-    super(path)
-    this.vector = vector
-  }
-  public place(point: paper.Point) {
-    return super.place(point.subtract(this.vector.divide(2)))
-  }
-}
-
-export function createTargetArrow() {
-  return new TargetArrow()
 }

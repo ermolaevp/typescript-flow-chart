@@ -1,4 +1,5 @@
-import { drawConnection, createTargetArrow } from './connection'
+import { drawConnection } from './connection'
+import { TargetArrow } from './TargetArrow'
 import paper from 'paper'
 
 interface TransitionProps {
@@ -30,14 +31,15 @@ export class Transition extends paper.Group {
       segments: drawConnection(this.sourcePoint, this.targetPoint),
       strokeColor: 'black'
     })
-    this.targetArrow = createTargetArrow()
-    this.children = [path, this.targetArrow.place(this.targetPoint)]
+    this.targetArrow = new TargetArrow().place(this.targetPoint)
+    this.children = [path, this.targetArrow]
   }
   public redraw() {
-    const sourcePoint = this.getSourcePoint()
-    const targetPoint = this.getTargetPoint()
-    this.firstChild.segments = drawConnection(sourcePoint, targetPoint)
-    this.lastChild.position = targetPoint
+    this.sourcePoint = this.getSourcePoint()
+    this.targetPoint = this.getTargetPoint()
+    this.firstChild.segments = drawConnection(this.sourcePoint, this.targetPoint)
+    this.targetArrow.position = this.targetPoint
+    this.targetArrow.position.y -= 5
   }
   static getName(id: string) {
     return 'transition_' + id
@@ -45,14 +47,22 @@ export class Transition extends paper.Group {
   public hasConnectionWith(status: paper.Item) {
     return [this.source, this.target].includes(status)
   }
-  private getSourcePoint() {
+  public getSourcePoint() {
     const sourcePoint = this.source.lastChild.getPointByAngle(this.sourceAngle)
     if (!sourcePoint) throw new Error(`No source point found for ${this.sourceAngle}`)
     return sourcePoint
   }
-  private getTargetPoint() {
+  public getTargetPoint() {
     const targetPoint = this.target.lastChild.getPointByAngle(this.targetAngle)
     if (!targetPoint) throw new Error(`No target point found for ${this.targetAngle}`)
     return targetPoint
+  }
+  public reconnectSourcePoint(to: paper.Point) {
+    this.sourceAngle = this.source.lastChild.getAngleByPoint(to)
+    this.redraw()
+  }
+  public reconnectTargetPoint(to: paper.Point) {
+    this.targetAngle = this.target.lastChild.getAngleByPoint(to)
+    this.redraw()
   }
 }

@@ -10,7 +10,6 @@ interface Props {
 }
 
 export class StatusRectangle extends paper.Group {
-  // private circles
   private initalProps
   public constructor(props: Props) {
     super()
@@ -32,7 +31,6 @@ export class StatusRectangle extends paper.Group {
       fillColor: '#00875a',
       blendMode: 'overlay',
     })
-    // this.circles = new ConnectionPointGroup(statusRect)
     this.onMouseEnter = function() {
       this.lastChild.visible = true
     }
